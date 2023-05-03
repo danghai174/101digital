@@ -1,0 +1,22 @@
+pipeline { 
+    agent any 
+    parameters {
+            string(name: 'TAG', description: 'Which TAG to deploy?')
+    }
+    stages {
+        stage('Deploy') { 
+            steps { 
+                sh "helm upgrade --install ex-assignment helm/ex-assignment --set image.tag=${params.TAG}" 
+            }
+        }
+    }
+    post {
+        success {
+            echo 'Deployment SUCCEEDED!'
+        }
+        failure {
+            echo 'Deployment FAILED :('
+            sh 'helm rollback ex-assignment 0'
+        }
+    }
+}

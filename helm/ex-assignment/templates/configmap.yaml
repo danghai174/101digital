@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "ex-assignment.fullname" . }}-config-map
+  labels:
+    {{- include "ex-assignment.labels" . | nindent 4 }}
+data:
+  default.conf: |
+    server {
+        listen       80;
+        server_name  _;
+
+        #charset koi8-r;
+        #access_log  /var/log/nginx/host.access.log  main;
+
+        location / {
+            proxy_set_header Host "jsonplaceholder.typicode.com";
+            resolver 1.1.1.1 ipv6=off valid=30s;
+            resolver_timeout      5s;
+            proxy_pass http://jsonplaceholder.typicode.com/todos/;
+        }
+    }
